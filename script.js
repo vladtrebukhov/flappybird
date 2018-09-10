@@ -2,7 +2,6 @@
 const canvas = document.getElementById('flappy');
 const context = canvas.getContext('2d');
 
-
 // load images
 var background = new Image();
 var foreground = new Image();
@@ -20,64 +19,66 @@ bird.src = 'images/bird.png';
 var flySound = new Audio('sounds/fly.mp3');
 var scoreSound = new Audio('sounds/score.mp3');
 
-
 // define variables
-const pipeWidth = 52;
-const foregroundHeight = 118;
 var score = 0;
 var pipe = [];
 
 pipe[0] = {
   x: canvas.width,
-  y: 0
-
+  y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height
 };
 
-var gap = 85;
-var constant = pipeNorth.height + gap; // pipe South starts after pipe north plus gap
-var gravity = 1.25;
+var gapConstant = 85;
+var gravity = 1.5;
 var birdX = 20;
 var birdY = 150;
 
 // on key down
-
 var flyUp = () => {
   birdY = birdY - 25;
   flySound.currentTime = 0;
   flySound.play();
-}
-document.addEventListener('keydown', flyUp);
+};
 
+document.addEventListener('keydown', flyUp);
 
 // draw function
 var draw = () => {
+  var gap = pipeNorth.height + gapConstant; // pipe South starts after pipe north plus gap
   context.save();
   context.drawImage(background, 0, 0); // drawImage(imageName, x, y)
 
   for (let i = 0; i < pipe.length; i++) {
     context.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
-    context.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant);
+
+    context.drawImage(pipeSouth, pipe[i].x, pipe[i].y + gap);
+
     context.drawImage(foreground, 0, canvas.height - foreground.height);
     pipe[i].x--;
 
-    if (pipe[i].x === canvas.width - 188) { // add new set of pipes to array pipe at X and Y once pipes get to about middle of canvas
+    if (pipe[i].x === canvas.width - 188) {
+      // add new set of pipes to array pipe at X and Y once pipes get to about middle of canvas
       pipe.push({
         x: canvas.width,
         y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height
-
-      })
+      });
     }
 
-    if (pipe[i].x === birdX + bird.width - 30) { // increase score once bird and pipes intersect
-      score++
+    if (pipe[i].x === birdX + bird.width - 30) {
+      // increase score once bird and pipes intersect
+      score++;
       scoreSound.play();
     }
 
     // collision detection
-    if (birdX + bird.width >= pipe[i].x && birdX <= pipe[i].x + pipeNorth.width &&
-    (birdY <= pipe[i].y + pipeNorth.height || birdY + bird.height >= pipe[i].y + constant) ||
-  birdY + bird.height >= canvas.height - foreground.height) {
-      location.reload()
+    if (
+      (birdX + bird.width >= pipe[i].x &&
+        birdX <= pipe[i].x + pipeNorth.width &&
+        (birdY <= pipe[i].y + pipeNorth.height ||
+          birdY + bird.height >= pipe[i].y + gap)) ||
+      birdY + bird.height >= canvas.height - foreground.height
+    ) {
+      window.location.reload();
     }
   }
   // load score text and style
@@ -85,13 +86,12 @@ var draw = () => {
   context.font = '25px Arial';
   context.fillText(`Score: ${score}`, 100, 450);
 
-
-
   context.drawImage(bird, birdX, birdY);
+
   birdY += gravity; // y increases by value of gravity each frame to make bird drop
 
   window.requestAnimationFrame(draw);
   context.restore();
-}
+};
 
 window.onload = draw;
