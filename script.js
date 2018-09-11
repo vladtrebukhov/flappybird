@@ -40,6 +40,19 @@ var flyUp = () => {
   flySound.play();
 };
 
+const resetCanvas = () => {
+  score = 0;
+  pipe = [];
+  pipe[0] = {
+    x: canvas.width,
+    y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height
+  };
+  gapConstant = 85;
+  gravity = 1.5;
+  birdX = 20;
+  birdY = 150;
+};
+
 document.addEventListener('keydown', flyUp);
 
 // draw function
@@ -78,7 +91,7 @@ var draw = () => {
           birdY + bird.height >= pipe[i].y + gap)) ||
       birdY + bird.height >= canvas.height - foreground.height
     ) {
-      window.location.reload();
+      resetCanvas();
     }
   }
   // load score text and style
