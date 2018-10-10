@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./images/flappybird.ico">
+    <title>Flappy Bird</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <canvas width="288" height="512"></canvas>
+    </div>
+
+    <style>
+        * {
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        //variables 
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+
+        var background = new Image();
+        var foreground = new Image();
+        var bird = new Image();
+        var text = new Image();
+        var button = new Image();
+
+        background.src = 'images/bg.png';
+        foreground.src = 'images/fg.png';
+        bird.src = 'images/upflap.png';
+        text.src = 'images/text.png';
+        button.src = 'images/playbutton.png';
+
+        let birdX = 125;
+        let birdY = 110;
+        let gravity = .5;
+        let sideGravity = .75;
+
+        // since images are drawn to the page in JS and are not present in the DOM,
+        // adding an event listener won't work because the images drawn are simply pixels
+        // Therefore to get a click event on the button, I need to use some math to determine which element was clicked on the canvas
+        // Shout out SO! 
+
+        document.addEventListener('keydown', function () {
+            bird.src = 'images/downflap.png'
+        })
+        document.addEventListener('keyup', function () {
+            bird.src = 'images/upflap.png'
+        })
+
+
+        const animateBird = () => {
+            birdY += gravity;
+            birdX += sideGravity;
+            birdX > 210 ? sideGravity = -sideGravity : null;
+            birdX < 50 ? sideGravity = -sideGravity : null
+            birdY > 160 ? gravity = -gravity : null;
+            birdY < 110 ? gravity = -gravity : null;
+        }
+
+        const draw = () => {
+            context.drawImage(background, 0, 0);
+            context.drawImage(button, 90, 250);
+            context.drawImage(foreground, 0, canvas.height - foreground.height);
+            context.drawImage(text, 50, 50);
+            context.drawImage(bird, birdX, birdY);
+
+
+
+            animateBird();
+            window.requestAnimationFrame(draw);
+        }
+
+        window.onload = function () {
+            draw();
+
+        }
+    </script>
+</body>
+
+</html>
