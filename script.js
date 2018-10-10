@@ -4,16 +4,18 @@ const context = canvas.getContext('2d');
 
 // load images
 var background = new Image();
+var backgroundnight = new Image();
 var foreground = new Image();
 var pipeNorth = new Image();
 var pipeSouth = new Image();
 var bird = new Image();
 
 background.src = 'images/bg.png';
+backgroundnight.src = 'images/bg-night.png';
 foreground.src = 'images/fg.png';
 pipeNorth.src = 'images/pipeNorth.png';
 pipeSouth.src = 'images/pipeSouth.png';
-bird.src = 'images/bird.png';
+bird.src = 'images/upflap.png';
 
 // load audio
 var flySound = new Audio('sounds/fly.mp3');
@@ -35,6 +37,7 @@ var birdY = 150;
 
 // on key down
 var flyUp = () => {
+  bird.src = 'images/downflap.png';
   birdY = birdY - 25;
   flySound.currentTime = 0;
   flySound.play();
@@ -51,9 +54,13 @@ const resetCanvas = () => {
   gravity = 1.5;
   birdX = 20;
   birdY = 150;
+  background.src = './images/bg.png';
 };
 
 document.addEventListener('keydown', flyUp);
+document.addEventListener('keyup', function () {
+  bird.src = 'images/upflap.png';
+});
 
 // draw function
 var draw = () => {
@@ -93,6 +100,10 @@ var draw = () => {
     ) {
       resetCanvas();
     }
+  }
+
+  if (score === 4) {
+    background.src = './images/bg-night.png';
   }
   // load score text and style
   context.fillStyle = '#000';
