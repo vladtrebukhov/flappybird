@@ -5,18 +5,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="./images/flappybird.ico" />
+    <link rel="shortcut icon" href="./images/flappybird.ico">
     <title>Flappy Bird</title>
 </head>
 
 <body>
-    <canvas id="flappy" height="512" width="288"></canvas>
-    <script src="script.js"></script>
+    <div id="main-container">
+        <canvas width="288" height="512"></canvas>
+        <div id="button"></div>
+    </div>
+
     <style>
-        * {
+        #main-container {
             text-align: center;
         }
+
+        #button {
+            width: 115px;
+            height: 35px;
+            background: url('images/playbutton.png');
+            position: absolute;
+            z-index: 1;
+            top: 255px;
+            left: 530px;
+        }
+
+        #button:hover {
+            cursor: pointer;
+        }
     </style>
+
+    <script>
+        //variables 
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext('2d');
+
+        let theme = new Audio('./sounds/theme.mp3')
+        var background = new Image();
+        var foreground = new Image();
+        var bird = new Image();
+        var text = new Image();
+        var button = new Image();
+
+        background.src = 'images/bg.png';
+        foreground.src = 'images/fg.png';
+        bird.src = 'images/upflap.png';
+        text.src = 'images/text.png';
+        button.src = 'images/playbutton.png';
+
+        let birdX = 125;
+        let birdY = 110;
+        let gravity = 1;
+        let sideGravity = 1;
+
+        // since images are drawn to the page in JS and are not present in the DOM,
+        // adding an event listener won't work because the images drawn are simply pixels
+        // Therefore to get a click event on the button, I added a div to overlap the canvas
+
+        const eventListeners = () => {
+            document.addEventListener('keydown', function () {
+                bird.src = 'images/downflap.png'
+            })
+
+            document.addEventListener('mousedown', function () {
+                bird.src = 'images/downflap.png'
+            })
+            document.addEventListener('keyup', function () {
+                bird.src = 'images/upflap.png'
+            })
+            document.addEventListener('mouseup', function () {
+                bird.src = 'images/upflap.png'
+            })
+
+            document.getElementById('button').addEventListener('click', function () {
+                window.location = 'game.html'
+            })
+        }
+
+
+
+        const animateBird = () => {
+            birdY += gravity;
+            birdX += sideGravity;
+            birdX > 210 ? sideGravity = -sideGravity : null;
+            birdX < 50 ? sideGravity = -sideGravity : null
+            birdY > 160 ? gravity = -gravity : null;
+            birdY < 100 ? gravity = -gravity : null;
+        }
+
+        const draw = () => {
+            context.drawImage(background, 0, 0);
+            context.drawImage(foreground, 0, canvas.height - foreground.height);
+            context.drawImage(text, 40, 50, 210, 50);
+            context.drawImage(bird, birdX, birdY);
+            animateBird();
+            window.requestAnimationFrame(draw);
+        }
+
+        window.onload = function () {
+            draw();
+            // theme.play();
+
+        }
+
+        eventListeners();
+    </script>
 </body>
 
 </html>
