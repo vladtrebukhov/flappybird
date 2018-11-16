@@ -43,13 +43,14 @@ bird.src = 'images/upflap.png';
 // load audio
 let flySound = new Audio('sounds/fly.mp3');
 let scoreSound = new Audio('sounds/score.mp3');
-let theme = new Audio('./sounds/theme.mp3')
+let theme = new Audio('./sounds/theme.mp3');
 theme.loop = true;
 
 // define variables
 let numbers = [zero, one, two, three, four, five, six, seven, eight, nine];
 
 let score = 0;
+let index = 0;
 let pipe = [];
 
 pipe[0] = {
@@ -71,6 +72,7 @@ let flyUp = () => {
 };
 
 const resetCanvas = () => {
+  index = 0;
   score = 0;
   pipe = [];
   pipe[0] = {
@@ -96,23 +98,20 @@ const eventListeners = () => {
   });
 };
 
-
 //* * still need to fix score > 9 NOT FINISHED */
 const countScore = () => {
-  let displayScores = [];
-  // if score equals index of each number, draw that numbers image
+  context.drawImage(numbers[index], 130, 450);
+
   for (let i = 0; i <= numbers.length; i++) {
     if (score === numbers.indexOf(numbers[i])) {
-      context.drawImage(numbers[i], 135, 450)
+      context.drawImage(numbers[i], 155, 450);
+      if (score > 9) {
+        score = 0;
+        countScore();
+      }
     }
-  };
-
-  if (score > 9) {
-    displayScores.push(numbers[1]);
-    context.drawImage(displayScores[0], 135, 450);
   }
-}
-
+};
 
 // draw function
 let draw = () => {
@@ -139,9 +138,13 @@ let draw = () => {
     if (pipe[i].x === birdX + bird.width - 30) {
       // increase score once bird and pipes intersect
       score++;
+      console.log(pipe.length);
+      if (score > 9) {
+        score = 0;
+        index++;
+      }
       scoreSound.play();
     }
-
 
     // collision detection
     if (
@@ -157,19 +160,14 @@ let draw = () => {
 
   countScore();
 
-  // change background from day/night depending on score
-  if (score % 5 === 0 && score !== 0) {
-    background.src = './images/bg-night.png'
-  }
-  if (score % 7 === 0) {
-    background.src = './images/bg.png'
-  }
+  // change background from day/night
 
-
-  // load score text and style
-  // context.fillStyle = '#000';
-  // context.font = '25px Arial';
-  // context.fillText(`Score: ${score}`, 100, 450);
+  if ((pipe.length - 1) % 5 === 0) {
+    background.src = './images/bg-night.png';
+  }
+  if ((pipe.length - 1) % 7 === 0) {
+    background.src = './images/bg.png';
+  }
 
   context.drawImage(bird, birdX, birdY);
 
@@ -184,4 +182,4 @@ eventListeners();
 window.onload = function () {
   draw();
   theme.play();
-}
+};
