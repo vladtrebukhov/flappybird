@@ -10,11 +10,18 @@
 </head>
 
 <body>
-    <canvas id="flappy" height="512" width="288"></canvas>
+    <div id="main-container">
+        <canvas id="flappy" height="512" width="288"></canvas>
+    </div>
+
     <script src="script.js"></script>
     <style>
-        * {
-            text-align: center;
+        #main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
     </style>
 </body>

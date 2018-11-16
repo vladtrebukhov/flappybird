@@ -17,25 +17,18 @@
 
     <style>
         #main-container {
-            position: fixed;
-            text-align: center;
-            margin-left: 430px;
-        }
-
-        canvas {
-            z-index: 0;
-            position: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         #button {
             width: 115px;
             height: 35px;
             background: url('images/playbutton.png');
-            position: relative;
-            z-index: 1;
-            top: 255px;
-            left: 147px;
-
+            position: absolute;
         }
 
         #button:hover {
